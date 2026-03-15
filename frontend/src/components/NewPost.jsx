@@ -1,9 +1,12 @@
 import classes from "./NewPost.module.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import PostContext from "../store/PostContext";
 
-function NewPost({ onCancel, onAddPost }) {
+function NewPost({ onCancel }) {
   const [enteredBody, setEnteredBody] = useState("");
   const [enteredAuthor, setEnteredAuthor] = useState("");
+
+  const postCtx = useContext(PostContext);
 
   function bodyChangeHandler(event) {
     setEnteredBody(event.target.value);
@@ -13,14 +16,14 @@ function NewPost({ onCancel, onAddPost }) {
     setEnteredAuthor(event.target.value);
   }
 
-  function submitHandler(event) {
+  async function submitHandler(event) {
     event.preventDefault();
     const postData = {
       body: enteredBody,
       author: enteredAuthor,
     };
 
-    onAddPost(postData);
+    await postCtx.addPost(postData);
     onCancel();
   }
 
@@ -30,7 +33,6 @@ function NewPost({ onCancel, onAddPost }) {
         <label htmlFor="body">Text</label>
         <textarea id="body" required rows={3} onChange={bodyChangeHandler} />
       </p>
-
       <p>
         <label htmlFor="name">Your name</label>
         <input type="text" id="name" required onChange={authChangeHandler} />
@@ -39,7 +41,7 @@ function NewPost({ onCancel, onAddPost }) {
         <button type="button" onClick={onCancel}>
           Cancel
         </button>
-        <button>Submit</button>
+        <button>{postCtx.isPosting ? "Sending..." : "Submit"}</button>
       </p>
     </form>
   );

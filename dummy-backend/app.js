@@ -37,6 +37,7 @@ app.post("/posts", async (req, res) => {
   };
   const updatedPosts = [newPost, ...existingPosts];
   await storePosts(updatedPosts);
+  await new Promise((resolve) => setTimeout(() => resolve(), 3000));
   res.status(201).json({ message: "Stored new post.", post: newPost });
 });
 
